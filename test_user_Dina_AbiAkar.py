@@ -1,5 +1,4 @@
-# test_user_Dina_AbiAkar.py
-# Lab 7 - Python testing - Dina Abi Akar
+
 
 import sqlite3
 
@@ -12,9 +11,6 @@ from database import (init_db, initial_users, insert_user, get_users,
 from app import app
 
 
-# ---------------------------------------------------------------
-# FIXTURES
-# ---------------------------------------------------------------
 
 @pytest.fixture(autouse=True)
 def fresh_db(tmp_path, monkeypatch):
@@ -46,10 +42,6 @@ def new_user():
     }
 
 
-# ---------------------------------------------------------------
-# 1. The database is created with the specified users on first run
-# ---------------------------------------------------------------
-
 def test_database_created_with_initial_users():
     users = get_users()
     assert len(users) == len(initial_users)
@@ -66,9 +58,6 @@ def test_running_app_again_does_not_duplicate_users():
     assert len(get_users()) == len(initial_users)
 
 
-# ---------------------------------------------------------------
-# 2. insert_user()
-# ---------------------------------------------------------------
 
 def test_insert_user(new_user):
     inserted = insert_user(new_user)
@@ -78,9 +67,6 @@ def test_insert_user(new_user):
     assert len(get_users()) == len(initial_users) + 1
 
 
-# ---------------------------------------------------------------
-# 3. get_users()
-# ---------------------------------------------------------------
 
 def test_get_users():
     users = get_users()
@@ -88,28 +74,21 @@ def test_get_users():
     assert len(users) == 3
     names = [u["name"] for u in users]
     assert "John Doe" in names
-    assert "Jane Smith" in names
-    assert "Ali Hassan" in names
+    assert "Nazek Hasbini" in names
+    assert "Serena Soubra" in names
 
 
-# ---------------------------------------------------------------
-# 4. get_user_by_id()
-# ---------------------------------------------------------------
 
 def test_get_user_by_id():
     user = get_user_by_id(1)
     assert user["user_id"] == 1
     assert user["name"] == "John Doe"
-    assert user["country"] == "Austria"
+    assert user["country"] == "USA"
 
 
 def test_get_user_by_id_not_found():
     assert get_user_by_id(999) == {}
 
-
-# ---------------------------------------------------------------
-# 5. update_user()
-# ---------------------------------------------------------------
 
 def test_update_user():
     changes = {
@@ -125,9 +104,6 @@ def test_update_user():
     assert get_user_by_id(1)["name"] == "John Updated"
 
 
-# ---------------------------------------------------------------
-# 6. delete_user()
-# ---------------------------------------------------------------
 
 def test_delete_user():
     result = delete_user(1)
@@ -153,13 +129,8 @@ def test_api_get_user(client):
     data = json.loads(response.get_data(as_text=True))
     assert response.status_code == 200
     assert data["user_id"] == 2
-    assert data["name"] == "Jane Smith"
-    assert data["email"] == "janesmith@gmail.com"
-
-
-# ---------------------------------------------------------------
-# 8. api_add_user()
-# ---------------------------------------------------------------
+    assert data["name"] == "Nazek Hasbini"
+    assert data["email"] == "nazek@gmail.com"
 
 def test_api_add_user(client, new_user):
     response = client.post(
@@ -176,15 +147,12 @@ def test_api_add_user(client, new_user):
     assert get_user_by_id(4)["name"] == new_user["name"]
 
 
-# ---------------------------------------------------------------
-# 9. api_update_user()
-# ---------------------------------------------------------------
 
 def test_api_update_user(client):
     changes = {
         "user_id": 3,
-        "name": "Ali Updated",
-        "email": "aliupdated@gmail.com",
+        "name": "Serena Updated",
+        "email": "Serenaupdated@gmail.com",
         "phone": "70000000",
         "address": "Jounieh",
         "country": "Lebanon"
@@ -197,12 +165,10 @@ def test_api_update_user(client):
     data = json.loads(response.get_data(as_text=True))
     assert response.status_code == 200
     assert data == changes
-    assert get_user_by_id(3)["name"] == "Ali Updated"
+    assert get_user_by_id(3)["name"] == "Serena Updated"
 
 
-# ---------------------------------------------------------------
-# 10. api_delete_user()
-# ---------------------------------------------------------------
+
 
 def test_api_delete_user(client):
     response = client.delete('/api/users/delete/2')

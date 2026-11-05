@@ -1,4 +1,3 @@
-#!/usr/bin/python
 import sqlite3
 
 
@@ -77,7 +76,7 @@ def get_user_by_id(user_id):
         cur = conn.cursor()
         cur.execute("SELECT * FROM users WHERE user_id = ?", (user_id,))
         row = cur.fetchone()
-        # convert row object to dictionary
+    
         user["user_id"] = row["user_id"]
         user["name"] = row["name"]
         user["email"] = row["email"]
@@ -99,7 +98,7 @@ def update_user(user):
         cur.execute("UPDATE users SET name = ?, email = ?, phone = ?, address = ?, country = ? WHERE user_id = ?",
                     (user["name"], user["email"], user["phone"], user["address"], user["country"], user["user_id"],))
         conn.commit()
-        # return the user
+  
         updated_user = get_user_by_id(user["user_id"])
     except:
         conn.rollback()
@@ -124,26 +123,24 @@ def delete_user(user_id):
     return message
 
 
-# ---------- NEW FOR LAB 7 ----------
-# The users the database should contain the first time the app runs.
 initial_users = [
     {
         "name": "John Doe",
         "email": "jondoe@gmail.com",
         "phone": "067765434567",
-        "address": "John Doe Street, Innsbruck",
-        "country": "Austria"
+        "address": "John Doe Street",
+        "country": "USA"
     },
     {
-        "name": "Jane Smith",
-        "email": "janesmith@gmail.com",
+        "name": "Nazek Hasbini",
+        "email": "nazek@gmail.com",
         "phone": "03123456",
         "address": "Hamra Street, Beirut",
         "country": "Lebanon"
     },
     {
-        "name": "Ali Hassan",
-        "email": "alihassan@gmail.com",
+        "name": "Serena Soubra",
+        "email": "Serena@gmail.com",
         "phone": "70987654",
         "address": "Bliss Street, Beirut",
         "country": "Lebanon"
@@ -152,8 +149,6 @@ initial_users = [
 
 
 def init_db():
-    # Create the table, and add the initial users only if the table is empty
-    # (so running the app a second time does not add them twice).
     create_db_table()
     if len(get_users()) == 0:
         for user in initial_users:

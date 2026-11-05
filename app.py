@@ -35,4 +35,4 @@ def api_delete_user(user_id):
 
 if __name__ == "__main__":
     init_db()
-    app.run()  # run app
+    app.run()  
